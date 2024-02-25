@@ -1,57 +1,31 @@
-EPSILON = 1e-10
+def dot_product(vec1, vec2):
+    return sum(x * y for x, y in zip(vec1, vec2))
 
-def swap_rows(matrix, row1, row2):
-    matrix[row1], matrix[row2] = matrix[row2], matrix[row1]
 
-def gaussian_elimination(matrix):
-    rows = len(matrix)
-    cols = len(matrix[0]) - 1
+def simple_iteration(A, b, x0, tol=1e-6, max_iter=1000):
+    n = len(b)
+    x = x0.copy()
 
-    for i in range(rows):
-        pivot_row = i
-        for j in range(i + 1, rows):
-            if abs(matrix[j][i]) > abs(matrix[pivot_row][i]):
-                pivot_row = j
+    for k in range(max_iter):
+        x_new = [0] * n
+        for i in range(n):
+            s = dot_product(A[i], x)
+            s -= A[i][i] * x[i]
+            x_new[i] = (b[i] - s) / A[i][i]
 
-        if abs(matrix[pivot_row][i]) < EPSILON:
-            continue
+        if max(abs(x_new[i] - x[i]) for i in range(n)) < tol:
+            return x_new, k + 1
 
-        if pivot_row != i:
-            swap_rows(matrix, i, pivot_row)
+        x = x_new
 
-        for j in range(i + 1, rows):
-            factor = matrix[j][i] / matrix[i][i]
-            for k in range(i, cols + 1):
-                matrix[j][k] -= factor * matrix[i][k]
+    raise ValueError("Метод не сошёлся за указанное количество итераций")
 
-    # Обратный ход с занулением элементов под главной диагональю
-    for i in range(rows - 1, -1, -1):
-        if abs(matrix[i][i]) < EPSILON:
-            continue
-        matrix[i][cols] /= matrix[i][i]
-        matrix[i][i] = 1
-        for j in range(i - 1, -1, -1):
-            if abs(matrix[j][i]) < EPSILON:
-                continue
-            factor = matrix[j][i] / matrix[i][i]
-            matrix[j][cols] -= factor * matrix[i][cols]
-            matrix[j][i] = 0
+A = [[4, 1, 1],
+     [3, -9, 2],
+     [2, 1, 6]]
+b = [7, -8, 9]
+x0 = [0, 0, 0]
 
-# Пример входных данных (матрица коэффициентов системы уравнений)
-matrix = [
-    [-2, 1, -3, -8],
-    [3, 1, -6, -9],
-    [1, 1, 2, 5]
-]
-
-gaussian_elimination(matrix)
-
-# Извлечение и вывод значений x, y, z
-x, y, z = matrix[0][-1], matrix[1][-1], matrix[2][-1]
-print("x =", x)
-print("y =", y)
-print("z =", z)
-
-# Вывод полученной матрицы
-for row in matrix:
-    print("\t".join(map(str, row)))
+solution, iterations = simple_iteration(A, b, x0, tol=1e-12, max_iter=10000)
+print("Решение:", solution)
+print("Количество итераций:", iterations)
