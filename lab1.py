@@ -14,18 +14,17 @@ def simple_iteration(A, b, x0, tol=1e-6, max_iter=1000):
             x_new[i] = (b[i] - s) / A[i][i]
 
         if max(abs(x_new[i] - x[i]) for i in range(n)) < tol:
-            return x_new, k + 1
+            return x_new
 
         x = x_new
 
     raise ValueError("Метод не сошёлся за указанное количество итераций")
 
-A = [[4, 1, 1],
-     [3, -9, 2],
-     [2, 1, 6]]
-b = [7, -8, 9]
+A = [[10, 1, -1],
+     [1, 10, -1],
+     [-1, 1, 10]]
+b = [11, 10, 10]
 x0 = [0, 0, 0]
 
 solution, iterations = simple_iteration(A, b, x0, tol=1e-12, max_iter=10000)
 print("Решение:", solution)
-print("Количество итераций:", iterations)
