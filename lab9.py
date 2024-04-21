@@ -42,15 +42,6 @@ def modified_euler_method(f, x0, y0, h, n):
         y_values.append(y_corrector)
     return x_values, y_values
 
-def monte_carlo_integration(f, a, b, n):
-    """Monte Carlo integration for numerical integration"""
-    integral = 0
-    for _ in range(n):
-        x = random.uniform(a, b)
-        integral += f(x)
-    integral *= (b - a) / n
-    return integral
-
 # Пример использования всех методов:
 x0 = 0
 y0 = 1
@@ -70,7 +61,6 @@ x_values_modified_euler, y_values_modified_euler = modified_euler_method(f, x0, 
 a = 0
 b = math.pi
 n_integral = 1000000
-monte_carlo_integral = monte_carlo_integration(math.sin, a, b, n_integral)
 
 # Вывод результатов
 print("Euler's Method:")
@@ -84,5 +74,3 @@ for x, y in zip(x_values_rk4, y_values_rk4):
 print("\nModified Euler's Method:")
 for x, y in zip(x_values_modified_euler, y_values_modified_euler):
     print(f"x = {x}, y = {y}")
-
-print("\nMonte Carlo Method Integral (sin(x) from 0 to pi):", monte_carlo_integral)
